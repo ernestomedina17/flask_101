@@ -1,5 +1,7 @@
 #!/usr/local/bin/python3.7
-from flask import Flask, jsonify, request  # jsonify in lower case because its a method
+from flask import Flask, jsonify, request, render_template  # jsonify in lower case because its a method
+
+app = Flask(__name__)
 
 # JSON is a Python's Dictionary text/string 
 stores = [
@@ -14,13 +16,17 @@ stores = [
     }
 ]
 
-app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return render_template('index.html')
 
 
+@app.route('/store', methods=['POST'])
 def create_store():
     request_data = request.get_json()  # Get the data from the request as a Dictionary
     new_store = {
-        'name': request_data['name'],   # Store name
+        'name': request_data['name'],  # Store name
         'items': []
     }
     stores.append(new_store)
