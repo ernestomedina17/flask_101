@@ -7,6 +7,7 @@ api = Api(app) # no need for jsonify anymore
 
 items = []  # in memory DB
 
+
 class Item(Resource):
     def get(self, name):
         for item in items:
@@ -19,6 +20,13 @@ class Item(Resource):
         items.append(item)
         return item, 201  # Created, 202 is Accepted but still creating it may take a long time
 
-api.add_resource(Item, '/item/<string:name>')
 
-app.run(port=5000)
+class ItemList(Resource):
+    def get(self):
+        return {items}
+
+
+api.add_resource(Item, '/item/<string:name>')
+api.add_resource(ItemList, '/items')
+
+app.run(port=5000, debug=True)
