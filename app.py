@@ -6,11 +6,11 @@ app = Flask(__name__)
 # JSON is a Python's Dictionary text/string 
 stores = [
     {
-        'Name': 'My Wonderful Store',
-        'Items': [
+        'name': 'My Wonderful Store',
+        'items': [
             {
-                'Name': 'My item',
-                'Price': 15.99
+                'name': 'My item',
+                'price': 15.99
             }
         ]
     }
@@ -36,7 +36,7 @@ def create_store():
 @app.route('/store/<string:name>', methods=['GET'])
 def get_store(name):
     for store in stores:
-        if store['Name'] == name:
+        if store['name'] == name:
             return jsonify(store)
     return jsonify({'message': 'store not found'})
 
