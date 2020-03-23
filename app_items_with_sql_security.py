@@ -1,5 +1,5 @@
 from werkzeug.security import safe_str_cmp
-from user2 import User
+from app_items_with_sql_user import User
 
 users = [
     User(1, 'bob', 'asdf')
