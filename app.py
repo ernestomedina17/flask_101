@@ -46,7 +46,7 @@ def get_stores():
     return jsonify({'stores': stores})  # gives back the list of dictionaries
 
 
-@app.route('/store/<string>', methods=['POST'])
+@app.route('/store/<string:name/item>', methods=['POST'])
 def create_item_in_store(name):
     request_data = request.get_json()
     for store in stores:
