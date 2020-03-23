@@ -9,13 +9,13 @@ app = Flask(__name__)
 app.secret_key = 'jose'
 api = Api(app)  # no need for jsonify anymore
 
-jwt = JWT(app, authenticate, identity)  # /auth - authenticate=username, identity=id
+jwt = JWT(app, authenticate, identity)  # /auth endpoint- authenticate=username, identity=id
 
 items = []  # in memory DB
 
 
 class Item(Resource):
-    @jwt_required       # Header must send Authorization JWT Token
+    @jwt_required()       # Header must send Authorization JWT Token
     def get(self, name):
         item = next(filter(lambda x: x['name'] == name, items), None)  # If no next item, then None
         return {'item': item}, 200 if item else 404  # if item exists 200, if not 404 not found

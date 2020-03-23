@@ -1,3 +1,4 @@
+werkzeug
 flask
 Flask_RESTful
 Flask-JWT
