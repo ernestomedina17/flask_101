@@ -31,18 +31,19 @@ class Item(Resource):
 
     def delete(self, name):
         global items
-        items = list(filter(lambda x: x['name'] != name, items))  # filter is like grep
+        items = list(filter(lambda x: x['name'] != name, items))  # filter is like grep, from the list keep != name
         return {'message': "Item('{}') deleted".format(name)}
 
     def put(self, name):  # UPDATE
         data = request.get_json()
-        item = next(filter(lambda x: x['name'] == name, items), None)
-        if item is None:
+        item = next(filter(lambda x: x['name'] == name, items), None)  # filter item from the list that = name
+        if item is None:    # means item does not exist
             item = {'name': name, 'price': data['price']}
-            items.append(item)
+            items.append(item)  # create or post non existing item
         else:
             item.update(data)
         return item
+
 
 class ItemList(Resource):
     def get(self):
