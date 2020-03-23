@@ -1,4 +1,4 @@
 werkzeug
-flask
+Flask
 Flask_RESTful
 Flask-JWT
