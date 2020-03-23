@@ -15,7 +15,7 @@ items = []  # in memory DB
 
 
 class Item(Resource):
-    @jwt_required()       # Header must send Authorization JWT Token
+    @jwt_required()       # DECORATOR - Requires Authorization JWT Token in the Header
     def get(self, name):
         item = next(filter(lambda x: x['name'] == name, items), None)  # If no next item, then None
         return {'item': item}, 200 if item else 404  # if item exists 200, if not 404 not found
@@ -29,6 +29,10 @@ class Item(Resource):
         items.append(item)
         return item, 201  # Created, 202 is Accepted but still creating it may take a long time
 
+    def delete(self, name):
+        global items
+        items = list(filter(lambda x: x['name'] != name, items))  # filter is like grep
+        return {'message': "Item('{}') deleted".format(name)}
 
 class ItemList(Resource):
     def get(self):
