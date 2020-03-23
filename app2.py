@@ -1,5 +1,5 @@
 #!/usr/local/bin/python3.7
-from flask import Flask
+from flask import Flask, request
 from flask_restful import Resource, Api
 
 app = Flask(__name__)
@@ -15,15 +15,16 @@ class Item(Resource):
                 return item
         return {'item': None}, 404 # not found
 
-    def post(self, name):
-        item = {'name': name, 'price': 12.00}
+    def post(self, name):         #(silent=True) returns None
+        data = request.get_json() #(force=True) When content type is not set, don't look at the header
+        item = {'name': name, 'price': data['price']}
         items.append(item)
         return item, 201  # Created, 202 is Accepted but still creating it may take a long time
 
 
 class ItemList(Resource):
     def get(self):
-        return {items}
+        return {'items': items}
 
 
 api.add_resource(Item, '/item/<string:name>')
