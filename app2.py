@@ -4,7 +4,6 @@ from flask_restful import Resource, Api, reqparse
 from flask_jwt import JWT, jwt_required
 from security import authenticate, identity
 
-
 app = Flask(__name__)
 app.secret_key = 'jose'
 api = Api(app)  # no need for jsonify anymore
@@ -15,7 +14,13 @@ items = []  # in memory DB
 
 
 class Item(Resource):
-    @jwt_required()       # DECORATOR - Requires Authorization JWT Token in the Header
+    parser = reqparse.RequestParser()  # Get PUT request body
+    parser.add_argument('price',
+                        type=float,
+                        required=True,  # Price is required in the request
+                        help="This field cannot be left blank!")
+
+    @jwt_required()  # DECORATOR - Requires Authorization JWT Token in the Header
     def get(self, name):
         item = next(filter(lambda x: x['name'] == name, items), None)  # If no next item, then None
         return {'item': item}, 200 if item else 404  # if item exists 200, if not 404 not found
@@ -24,7 +29,8 @@ class Item(Resource):
         if next(filter(lambda x: x['name'] == name, items), None):
             return {'message': "An item with name '{}' already exists".format(name)}, 400
 
-        data = request.get_json()  # (force=True) don't look at the header, #(silent=True) returns None
+        data = self.parser.parse_args() # Get the request and make sure it includes the price
+        # data = request.get_json()  # (force=True) don't look at the header, #(silent=True) returns None
         item = {'name': name, 'price': data['price']}
         items.append(item)
         return item, 201  # Created, 202 is Accepted but still creating it may take a long time
@@ -35,15 +41,10 @@ class Item(Resource):
         return {'message': "Item('{}') deleted".format(name)}
 
     def put(self, name):  # UPDATE
-        parser = reqparse.RequestParser()   # Get PUT request body
-        parser.add_argument('price',
-                            type=float,
-                            required=True,  # Price is required in the request
-                            help="This field cannot be left blank!")
-        data = parser.parse_args()
+        data = self.parser.parse_args()  # Get the request and make sure it includes the price
         # data = request.get_json()
         item = next(filter(lambda x: x['name'] == name, items), None)  # filter item from the list that = name
-        if item is None:    # means item does not exist
+        if item is None:  # means item does not exist
             item = {'name': name, 'price': data['price']}
             items.append(item)  # create or post non existing item
         else:
