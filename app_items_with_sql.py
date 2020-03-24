@@ -6,57 +6,89 @@ from app_items_with_sql_user import UserRegister
 
 app = Flask(__name__)
 app.secret_key = 'jose'
-api = Api(app)  # no need for jsonify anymore
-
-jwt = JWT(app, authenticate, identity)  # /auth post endpoint - authenticate=username, identity=id
-
-items = []  # in memory DB
+# Api lets you add Resources, and Resource lets you define HTTP Methods for your API
+api = Api(app)  
+# JWT creates /auth endpoint that permits POST requests for Auth. Parameters: authenticate=username, identity=id
+jwt = JWT(app, authenticate, identity)  
+# List of dictionaries to hold the items, E.g. 
+#   "items": [
+#       {
+#           "name": "pencil",
+#           "price": 1.99
+#       },
+#       {
+#           "name": "piano",
+#           "price": 5.9
+#       }
+#   ]
+items = []  
 
 
 class Item(Resource):
-    parser = reqparse.RequestParser()  # Get PUT request body
+    # Gets the Request so you can parse it for validation
+    parser = reqparse.RequestParser() 
+    # The 'price' argument is required in the request
     parser.add_argument('price',
                         type=float,
-                        required=True,  # Price is required in the request
+                        required=True,  
                         help="This field cannot be left blank!")
 
-    @jwt_required()  # DECORATOR - Requires Authorization JWT Token in the Header
+    # This is a DECORATOR that wrapps this GET HTTP Request Method to enforce Authorization via JWT Token in the Header
+    @jwt_required()
+    # GET HTTP Method to retrieve an item from the List
+    # http://localhost:5000/item/<string:name>
     def get(self, name):
-        item = next(filter(lambda x: x['name'] == name, items), None)  # If no next item, then None
-        return {'item': item}, 200 if item else 404  # if item exists 200, if not 404 not found
+        # next(iterator[, default]) - fetch next item from the collection, returns an Element, If no item is present returns None by default
+        # filter (function, iterable) - returns the same as returned by the function, iterates over items[] which contains {} elements
+        # the lambda returns 'x' which is a dictionary object that represents an item that matches the name of the item within the 'items' list
+        item = next(filter(lambda x: x['name'] == name, items), None)
+        # Returns a JSON object or Python dictionary, with the Key 'item' and value another Dictionary, E.g.
+        # { "item": { "name": "piano", "price": 5.9 } }
+        # Response Status code is 200 (OK), otherwise 404 (Not found)
+        return {'item': item}, 200 if item else 404  
 
+    # POST HTTP Method to append another item into the List.
+    # http://localhost:5000/item/<string:name>
     def post(self, name):
+        # If there is an item with that 'name', do not creaet it, and return a Response Status code of 400 (Bad Request)
         if next(filter(lambda x: x['name'] == name, items), None):
             return {'message': "An item with name '{}' already exists".format(name)}, 400
 
-        data = self.parser.parse_args() # Get the request and make sure it includes the price
-        # data = request.get_json()  # (force=True) don't look at the header, #(silent=True) returns None
+        # Get the request and make sure it includes the 'price'
+        data = self.parser.parse_args()
         item = {'name': name, 'price': data['price']}
         items.append(item)
-        return item, 201  # Created, 202 is Accepted but still creating it may take a long time
+        # 201 (Created)
+        return item, 201  
 
+    # DELETE HTTP Method to delete an item from the List
+    # http://localhost:5000/item/<string:name>
     def delete(self, name):
+        # Don't want to create a local variable in this space
         global items
-        items = list(filter(lambda x: x['name'] != name, items))  # filter is like grep, from the list keep != name
+        # Updates the items List where only elements that don't have the name of the item that we want to delete will remain
+        items = list(filter(lambda x: x['name'] != name, items))
         return {'message': "Item('{}') deleted".format(name)}
 
-    def put(self, name):  # UPDATE
-        data = self.parser.parse_args()  # Get the request and make sure it includes the price
-        # data = request.get_json()
-        item = next(filter(lambda x: x['name'] == name, items), None)  # filter item from the list that = name
-        if item is None:  # means item does not exist
+    # PUT HTTP Method to update an existing item or append a new item into the List
+    # http://localhost:5000/item/<string:name>
+    def put(self, name):
+        data = self.parser.parse_args()
+        item = next(filter(lambda x: x['name'] == name, items), None)
+        if item is None:
             item = {'name': name, 'price': data['price']}
-            items.append(item)  # create or post non existing item
+            items.append(item)
         else:
             item.update(data)
         return item
 
 
 class ItemList(Resource):
+    # GET HTTP Method to return the list of items as a JSON or Python Dictionary with they Key items
     def get(self):
         return {'items': items}
 
-
+# Create the endpoints
 api.add_resource(Item, '/item/<string:name>')
 api.add_resource(ItemList, '/items')
 api.add_resource(UserRegister, '/register')
