@@ -5,3 +5,4 @@ venv\Scripts\activate
 pip install -r requirements.txt
 git config --global --edit 
 git config credential.helper store
+python createSQLLite3DB.py

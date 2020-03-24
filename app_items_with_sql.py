@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.secret_key = 'jose'
 api = Api(app)  # no need for jsonify anymore
 
-jwt = JWT(app, authenticate, identity)  # /auth endpoint- authenticate=username, identity=id
+jwt = JWT(app, authenticate, identity)  # /auth post endpoint - authenticate=username, identity=id
 
 items = []  # in memory DB
 
