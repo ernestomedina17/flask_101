@@ -1,4 +1,3 @@
-#! /home/ernestom/PycharmProjects/flask_101/venv/bin/python
 import sqlite3
 
 connection = sqlite3.connect('data.db')
