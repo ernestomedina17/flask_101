@@ -13,7 +13,8 @@ class User:
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
         query = "SELECT * FROM users WHERE username=?"
-        result = cursor.execute(query, (username,))  # Tuple, with single item requires a comma
+        # Tuple, with single item requires a comma
+        result = cursor.execute(query, (username,))  
         row = result.fetchone()
         if row:
             user = cls(*row)
@@ -29,7 +30,8 @@ class User:
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
         query = "SELECT * FROM users WHERE id=?"
-        result = cursor.execute(query, (_id,))  # Tuple, with single item requires a comma
+        # Tuple, with single item requires a comma
+        result = cursor.execute(query, (_id,))  
         row = result.fetchone()
         if row:
             user = cls(*row)
@@ -42,20 +44,23 @@ class User:
 
 
 class UserRegister(Resource):
-    parser = reqparse.RequestParser()  # Get PUT request body
+    # Get request in order to validate it
+    parser = reqparse.RequestParser()  
+    # 'username' is required in the request
     parser.add_argument('username',
                         type=str,
-                        required=True,  # Price is required in the request
+                        required=True,  
                         help="This field cannot be left blank!")
+    # 'password' is required in the request
     parser.add_argument('password',
                         type=str,
-                        required=True,  # Price is required in the request
+                        required=True,  
                         help="This field cannot be left blank!")
 
     def post(self):
         data = self.parser.parse_args()
-
-        if User.find_by_username(data['username']): # means its not None and it exists already
+        # means its not None and it exists already, return HTTP Status Code 400 (Bad request)
+        if User.find_by_username(data['username']): 
             return {"message": "A user with that username already exists"}, 400
 
         connection = sqlite3.connect('data.db')

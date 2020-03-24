@@ -24,9 +24,11 @@ def home():
 
 @app.route('/store', methods=['POST'])
 def create_store():
-    request_data = request.get_json()  # Get the data from the request as a Dictionary
+    # Get the data from the request as a Dictionary
+    request_data = request.get_json()  
     new_store = {
-        'name': request_data['name'],  # Store name
+        # Store name
+        'name': request_data['name'],  
         'items': []
     }
     stores.append(new_store)
@@ -43,7 +45,8 @@ def get_store(name):
 
 @app.route('/store', methods=['GET'])
 def get_stores():
-    return jsonify({'stores': stores})  # gives back the list of dictionaries
+    # gives back the list of dictionaries
+    return jsonify({'stores': stores})  
 
 
 @app.route('/store/<string:name>/item', methods=['POST'])
