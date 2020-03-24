@@ -8,7 +8,8 @@ app = Flask(__name__)
 app.secret_key = 'jose'
 # Api lets you add Resources, and Resource lets you define HTTP Methods for your API
 api = Api(app)  
-# JWT creates /auth endpoint that permits POST requests for Auth. Parameters: authenticate=username, identity=id
+# JWT creates /auth endpoint that permits POST requests for Authentication and Identification, returns a JWT Token
+# You can pass the token in the Headers E.g. Authorization = 'JWT $Token'
 jwt = JWT(app, authenticate, identity)  
 # List of dictionaries to hold the items, E.g. 
 #   "items": [
