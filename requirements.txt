@@ -1,4 +1,5 @@
 werkzeug
 Flask
-Flask_RESTful
+Flask-RESTful
 Flask-JWT
+Flask-SQLAlchemy
