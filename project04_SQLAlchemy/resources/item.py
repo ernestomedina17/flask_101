@@ -37,46 +37,27 @@ class Item(Resource):
         return item.json(), 201  
         
     def delete(self, name):
-        if ItemModel.find_by_name(name):
-            connection = sqlite3.connect('data.db')
-            cursor = connection.cursor()
-            query = "DELETE FROM items WHERE name=?"
-            cursor.execute(query, (name,))
-            connection.commit()
-            connection.close()
-            return {'message': "Item('{}') deleted".format(name)}
-        # Precondition Failed    
-        return {"message": "Item not found"}, 412
+        item = ItemModel.find_by_name(name)
+        if item:
+            item.delete_from_db()
+        return {'message': 'Item deleted'}
 
     def put(self, name):
         data = self.parser.parse_args()
         item = ItemModel.find_by_name(name)
-        updated_item = ItemModel(name, data['price'])
         
         if item is None:
-            try:
-                updated_item.insert()
-            except:
-                return {"message": "An error ocurred while trying to insert a new item"}
+            item = ItemModel(name, data['price'])
         else:
-            try:
-                updated_item.update()
-            except:
-                return {"message": "An error ocurred while trying to update a new item"}
-        return updated_item.json()
+            item.price = data['price']
+            
+        item.save_do_db()        
+        return item.json()
             
         
 class ItemList(Resource):
     def get(self):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-        query = "SELECT * FROM items"
-        result = cursor.execute(query)
-        items = []
-        for row in result:
-            items.append({'name': row[0], 'price': row[1]})
-            
-        connection.commit()
-        connection.close()
-        
-        return {'items': items}
+        # List comprehension, for each row in the table, convert it to json or dic
+        return {'items': [item.json() for item in ItemModel.query.all()]}
+        # OR with lambda, map and map reduce will resemble JavaScript 
+        # return {'items': list(map(lambda x: x.json, ItemModel.query.all()))}
