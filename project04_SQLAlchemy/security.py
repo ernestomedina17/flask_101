@@ -1,9 +1,9 @@
 from werkzeug.security import safe_str_cmp
-from app_items_with_sql_user import User
+from models.user import UserModel
 
 # JWT Authentication method
 def authenticate(username, password):
-    user = User.find_by_username(username)
+    user = UserModel.find_by_username(username)
     # safe string comparison
     if user and safe_str_cmp(user.password, password):  
         return user
@@ -13,4 +13,4 @@ def authenticate(username, password):
 def identity(payload):
     user_id = payload['identity']
     # Returns the user id, username and password to the App
-    return User.find_by_id(user_id)
+    return UserModel.find_by_id(user_id)

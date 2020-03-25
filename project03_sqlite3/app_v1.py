@@ -1,8 +1,8 @@
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
 from flask_jwt import JWT, jwt_required
-from app_items_with_sql_security import authenticate, identity
-from app_items_with_sql_user import UserRegister
+from security import authenticate, identity
+from user import UserRegister
 
 app = Flask(__name__)
 app.secret_key = 'jose'

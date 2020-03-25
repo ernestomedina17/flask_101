@@ -1,5 +1,5 @@
 from werkzeug.security import safe_str_cmp
-from app_items_with_sql_user import User
+from user import User
 
 # JWT Authentication method
 def authenticate(username, password):

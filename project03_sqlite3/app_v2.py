@@ -1,9 +1,9 @@
 from flask import Flask
 from flask_restful import Api
 from flask_jwt import JWT
-from app_items_with_sql_security import authenticate, identity
-from app_items_with_sql_user import UserRegister
-from app_items_with_sql_items import Item, ItemList
+from security import authenticate, identity
+from user import UserRegister
+from items import Item, ItemList
 
 app = Flask(__name__)
 app.secret_key = 'jose'
