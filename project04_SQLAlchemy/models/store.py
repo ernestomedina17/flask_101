@@ -1,28 +1,23 @@
 from db import db
 
-class ItemModel(db.Model):
-    __tablename__ = 'items'
+class StoreModel(db.Model):
+    __tablename__ = 'stores'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
-    price = db.Column(db.Float(precision=2)) # 0.00
-    store_id = db.Column(db.Integer, db.ForeignKey('stores.id'))
-    store = db.relationship('StoreModel')
+    # Store has many items, but create them at startup time
+    items = db.relationship('ItemModel', lazy='dynamic')
     
-    def __init__(self, name, price, store_id):
+    def __init__(self, name):
         self.name = name
-        self.price = price
-        self.store_id = store_id
         
     def json(self):
-        return {'name': self.name, 'price': self.price}
+        # .all is a query builder, which will get create(once) the items, them do subsecuente calls
+        return {'name': self.name, 'items': [item.son() for item in self.items.all()]}
     
     @classmethod
     def find_by_name(cls, name):
         # SELECT * FROM items WHERE name=name LIMIT 1
         return cls.query.filter_by(name=name).first()
-        # OR similarly:
-        # return cls.query.filter_by(name=name).filter_by(id=1)
-        # return cls.query.filter_by(name=name, id=1)
         
     def save_to_db(self):
         db.session.add(self)
