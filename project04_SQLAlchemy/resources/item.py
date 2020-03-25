@@ -1,13 +1,9 @@
-import sqlite3
 from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
 from models.item import ItemModel
 
-
 class Item(Resource):
-    # Gets the Request so you can parse it for validation
     parser = reqparse.RequestParser() 
-    # The 'price' argument is required in the request
     parser.add_argument('price',
                         type=float,
                         required=True,  
@@ -23,18 +19,13 @@ class Item(Resource):
     def post(self, name):
         if ItemModel.find_by_name(name):
             return {'message': "An item with name '{}' already exists".format(name)}, 400
-
         data = self.parser.parse_args()
         item = ItemModel(name, data['price'])
-        
         try:
-            item.insert()
+            item.save_to_db()
         except:
-            # Internal Server Error
-            return {"message": "An error ocurred while inserting the item."}, 500 
-        
-        # 201 (Created)
-        return item.json(), 201  
+            return {'message': "An error happended while trying to insert a new item"}
+        return item.json(), 201  # 201 (Created)
         
     def delete(self, name):
         item = ItemModel.find_by_name(name)
@@ -51,7 +42,7 @@ class Item(Resource):
         else:
             item.price = data['price']
             
-        item.save_do_db()        
+        item.save_to_db()        
         return item.json()
             
         
