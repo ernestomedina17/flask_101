@@ -31,7 +31,5 @@ api.add_resource(UserRegister, '/register')
 api.add_resource(Store, '/store/<string:name>')
 api.add_resource(StoreList, '/stores')
 
-# Only the file that you run(python app.py) == '__main__'
-if __name__ == '__main__':
-    db.init_app(app)
-    app.run(port=5000, debug=True)
+db.init_app(app)
+app.run(port=5000, debug=True)
