@@ -12,7 +12,7 @@ class StoreModel(db.Model):
         
     def json(self):
         # .all is a query builder, which will get create(once) the items, them do subsecuente calls
-        return {'name': self.name, 'items': [item.son() for item in self.items.all()]}
+        return {'name': self.name, 'items': [item.json() for item in self.items.all()]}
     
     @classmethod
     def find_by_name(cls, name):
