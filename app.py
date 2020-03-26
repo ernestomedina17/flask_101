@@ -32,4 +32,6 @@ api.add_resource(Store, '/store/<string:name>')
 api.add_resource(StoreList, '/stores')
 
 db.init_app(app)
-app.run(port=5000, debug=True)
+# Heroku uses uWSGI instead of Flask hence we comment out the below line
+# app.run(port=5000, debug=True)
+
