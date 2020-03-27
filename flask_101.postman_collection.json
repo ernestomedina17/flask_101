@@ -1,0 +1,482 @@
+{
+	"info": {
+		"_postman_id": "a8242944-5d7a-409f-b39b-4431a7be54b4",
+		"name": "flask_101",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a5578786-22ff-4e4e-b729-915e10652157",
+						"exec": [
+							"pm.test(\"Token is not empty\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.access_token !== undefined).to.be.true;",
+							"    pm.environment.set(\"jwt_token\", jsonData.access_token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"ernesto\",\n\t\"password\": \"asdf\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/auth",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"ernesto\",\n\t\"password\": \"asdf\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/register",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/items",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/items",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"items"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/item/piano",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "JWT {{jwt_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/item/piano",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						"piano"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/item/test",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODUwOTI5NTIsImlhdCI6MTU4NTA5MjY1MiwibmJmIjoxNTg1MDkyNjUyLCJpZGVudGl0eSI6NH0.VrMs7j-No5OKYFG0lrzruNPigIMw4RRIy9FjCdzglCU"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/item/test",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						"test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/item/notFound",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODUwOTI5NTIsImlhdCI6MTU4NTA5MjY1MiwibmJmIjoxNTg1MDkyNjUyLCJpZGVudGl0eSI6NH0.VrMs7j-No5OKYFG0lrzruNPigIMw4RRIy9FjCdzglCU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/item/notFound",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						"notFound"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/item/piano",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"piano\",\n\t\"price\": 7,\n\t\"store_id\": 1\n}",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/item/piano",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						"piano"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/item/pencil",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"pencil\",\n\t\"price\": 1.99,\n\t\"store_id\": 2\n}",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/item/pencil",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						"pencil"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/item/piano",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"piano\",\n\t\"price\": 6.12\n}"
+				},
+				"url": {
+					"raw": "{{url}}/item/piano",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						"piano"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/item/piano",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/item/piano",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						"piano"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/stores",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/stores",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"stores"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/store/amazon",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/store/amazon",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"store",
+						"amazon"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/store/amazon",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"amazon\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/store/amazon",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"store",
+						"amazon"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/store/walmart",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"amazon\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/store/walmart",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"store",
+						"walmart"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/store/amazon",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/store/amazon",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"store",
+						"amazon"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
+
