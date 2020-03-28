@@ -12,6 +12,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///data.db')
 # Turns Off Flask Obj mod tracking, cause the one in SqlAlchemy is better
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['PROPAGATE_EXCEPTIONS'] = True
 app.secret_key = 'jose'
 # Api lets you add Resources, and Resource lets you define HTTP Methods for your API
 api = Api(app)  
