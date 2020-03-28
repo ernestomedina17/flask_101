@@ -4,15 +4,18 @@ from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from security import authenticate, identity
 from db import db
-from resources.user import UserRegister, User, UserLogin, TokenRefresh
+from resources.user import UserRegister, User, UserLogin, UserLogout, TokenRefresh
 from resources.item import Item, ItemList
 from resources.store import Store, StoreList
+from blacklist import BLACKLIST
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///data.db')
 # Turns Off Flask Obj mod tracking, cause the one in SqlAlchemy is better
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
+app.config['JWT_BLACKLIST_ENABLED'] = True
+app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 app.secret_key = 'jose'  # app.config['JWT_SECRET_KEY']
 # Api lets you add Resources, and Resource lets you define HTTP Methods for your API
 api = Api(app)  
@@ -30,6 +33,13 @@ def add claims_to_jwt(identity):  # user.id
     if identity == 1:   # read from DB or config file instead of hardcoding
         return {'is_admin': True}
     return {'is_admin': False}
+
+
+@jwt.token_in_blacklist_loader
+def check_if_token_in_blacklist(decrypted_token):
+    #return decrypted_token['identity'] in BLACKLIST
+    return decrypted_token['jti'] in BLACKLIST
+
 
 # Message sent when you are required to re-authenticate (fresh)
 @jwt.expired_token_loader
@@ -60,6 +70,7 @@ def token_not_fresh_callback():
         'error': 'fresh_token_required'
     }), 401
 
+# When a user tries to do something unauthorized
 @jwt.revoked_token_loader
 def revoked_token_callback():
     return jsonify({
@@ -78,6 +89,7 @@ api.add_resource(StoreList, '/stores')
 # Instead of /auth, it returns access_token and refresh Token
 # In Postman Auth Header use Bearer {{token}} instead of JWT {{token}}
 api.add_resource(UserLogin, '/login') 
+api.add_resource(UserLogout, '/logout')  #Blacklist token not user
 api.add_resource(TokenRefresh, '/refresh') 
 
 db.init_app(app)
